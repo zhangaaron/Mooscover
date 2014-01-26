@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Mooscover</string>
+    <string name="app_name">Mooscovery</string>
     <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
     <string name="title_activity_discover_songs">DiscoverSongs</string>
     <string name="title_activity_show_list">ShowList</string>
+    <string name="title_activity_test">TestActivity</string>
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="temp">#ff888888</color>
 
 </resources>

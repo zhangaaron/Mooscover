@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -18,30 +19,37 @@ import android.view.View;
 import android.widget.TextView;
 
 public class ShowList extends Activity {
- 
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		ActionBar actionBar = getActionBar();
+		actionBar.hide();
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_show_list);
-
+		System.out.println(DiscoverSongs.favoritesList);
 
 		int arraySize = DiscoverSongs.favoritesList.size();
 		TextView txtview = (TextView)findViewById(R.id.textView1);
 		System.out.println(DiscoverSongs.favoritesList.size());
 		String dis = new String();
-		MediaMetadataRetriever getInfo = new MediaMetadataRetriever();
-		
+
+
 		for(int i = 0; i < arraySize; i++) {	
-			
-			File f = new File(DiscoverSongs.favoritesList.get(i));
 			try {
+				File f = new File(DiscoverSongs.favoritesList.get(i));
+				MediaMetadataRetriever getInfo = new MediaMetadataRetriever();
 				FileInputStream fstream = new FileInputStream(f);
 				FileDescriptor fd = fstream.getFD();
-				
-				getInfo.setDataSource(fd);
-				dis += getInfo.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE) + "\n";
-				System.out.println(dis);
-				fstream.close();
+				System.out.println(fd.valid());
+				if (fd.valid()){
+					getInfo.setDataSource(fd);
+
+					//System.out.println(getInfo.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE));
+					dis += getInfo.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE) + "\n";
+					//System.out.println(dis);
+					fstream.close();
+				}
+
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -49,9 +57,7 @@ public class ShowList extends Activity {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			        
-			
-			
+
 		}
 		//txtview.setText((CharSequence) DiscoverSongs.favoritesList.toString());
 		txtview.setText(dis);
@@ -63,8 +69,13 @@ public class ShowList extends Activity {
 		getMenuInflater().inflate(R.menu.show_list, menu);
 		return true;
 	}
-	
+
 	public void discoverSongs(View view){
+		startActivity(new Intent(this, DiscoverSongs.class));
+	}
+	
+	@Override
+	public void onBackPressed(){
 		startActivity(new Intent(this, DiscoverSongs.class));
 	}
 
