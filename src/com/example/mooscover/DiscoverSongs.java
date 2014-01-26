@@ -23,7 +23,7 @@ public class DiscoverSongs extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_discover_songs);
 		
-		File musicDirectory = new File( getExternalFilesDir(Environment.DIRECTORY_MUSIC), "");
+		File musicDirectory = new File( getExternalFilesDir(Environment.DIRECTORY_MUSIC), "moosic");
 		File[] songList = musicDirectory.listFiles();
 		
 		
