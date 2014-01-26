@@ -1,7 +1,11 @@
 package com.example.mooscover;
 
 
+import java.io.File;
 import java.io.FileDescriptor;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import android.app.Activity;
 import android.content.Context;
@@ -20,25 +24,34 @@ public class ShowList extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_show_list);
 
-		/*
-		for (int i = 0; i < DiscoverSongs.favoritesList.size(); i++){
-			System.out.println(DiscoverSongs.favoritesList.get(i));
-		}*/
 
 		int arraySize = DiscoverSongs.favoritesList.size();
 		TextView txtview = (TextView)findViewById(R.id.textView1);
-		//System.out.println(DiscoverSongs.favoritesList.size());
+		System.out.println(DiscoverSongs.favoritesList.size());
 		String dis = new String();
+		MediaMetadataRetriever getInfo = new MediaMetadataRetriever();
 		
 		for(int i = 0; i < arraySize; i++) {	
-			MediaMetadataRetriever getInfo = new MediaMetadataRetriever();
-			System.out.println(DiscoverSongs.favoritesList.get(i));
-			AssetFileDescriptor songToID = this.getResources().openRawResourceFd(DiscoverSongs.favoritesList.get(i));
-			FileDescriptor fd = songToID.getFileDescriptor();
-			getInfo.setDataSource(fd);
 			
-			dis += getInfo.extractMetadata(9) + "\n";
-			System.out.println(dis);
+			File f = new File(DiscoverSongs.favoritesList.get(i));
+			try {
+				FileInputStream fstream = new FileInputStream(f);
+				FileDescriptor fd = fstream.getFD();
+				
+				getInfo.setDataSource(fd);
+				dis += getInfo.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE) + "\n";
+				System.out.println(dis);
+				fstream.close();
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			        
+			
+			
 		}
 		//txtview.setText((CharSequence) DiscoverSongs.favoritesList.toString());
 		txtview.setText(dis);

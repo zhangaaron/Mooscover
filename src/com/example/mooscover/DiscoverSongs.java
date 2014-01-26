@@ -1,6 +1,8 @@
 package com.example.mooscover;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Stack;
 
@@ -15,7 +17,7 @@ import android.view.Menu;
 import android.view.View;
 
 public class DiscoverSongs extends Activity {
-	public static Stack<Integer> favoritesList = new Stack();
+	public static Stack<String> favoritesList = new Stack();
 	MediaPlayer mPlayer;
 	final Handler h = new Handler();
 	@Override
@@ -23,14 +25,28 @@ public class DiscoverSongs extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_discover_songs);
 		
-		File musicDirectory = new File( getExternalFilesDir(Environment.DIRECTORY_MUSIC), "moosic");
+		File musicDirectory = new File( "/storage/emulated/0/Music/moosic/");
 		File[] songList = musicDirectory.listFiles();
 		
-		
-
+		//String[] files = {"/storage/emulated/0/Music/moosic/song1.mp3", "/storage/emulaint randomFile = new Double(Math.random() * (songList.length + 1)).intValue();
 		mPlayer = new MediaPlayer();
+		if(mPlayer.isPlaying()) {
+		    mPlayer.pause();
+		}
+		
+		int randomFileNum = Double.valueOf(Math.random() * (songList.length)).intValue();
 		try {
-			mPlayer.setDataSource(songList[0].getAbsolutePath());
+			
+			File mediaToPlay = songList[randomFileNum];
+			FileInputStream fstream = new FileInputStream(mediaToPlay);
+			mPlayer.setDataSource(fstream.getFD());         
+			fstream.close();
+			mPlayer.prepare();
+			mPlayer.start();
+			mPlayer.prepare();
+			
+			
+			
 		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -44,12 +60,15 @@ public class DiscoverSongs extends Activity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		//mPlayer.start();
 		mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 		mPlayer.seekTo(60*1000);
 		mPlayer.start();
 		
-//		if (!(favoritesList.contains(database[pickRandomSong])))
-//				favoritesList.push(database[pickRandomSong]);
+
+		if (!(favoritesList.contains(songList[randomFileNum].getAbsolutePath())))
+				favoritesList.push(songList[randomFileNum].getAbsolutePath());
 		
 		
 		h.postDelayed(new Runnable(){
@@ -72,7 +91,8 @@ public class DiscoverSongs extends Activity {
 	public void dislikeButton(View view){
 		mPlayer.stop();
 		mPlayer.release();
-		favoritesList.pop();
+		if (!(favoritesList.isEmpty()))
+			favoritesList.pop();
 		h.removeMessages(0);
 		startActivity(new Intent(this, DiscoverSongs.class));
 	}
